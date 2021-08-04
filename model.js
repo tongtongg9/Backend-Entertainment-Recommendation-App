@@ -40,7 +40,7 @@ module.exports = {
   // save(db, data) {
   //   return db('users').insert(data, 'id');
   // },
-
+  
   //! regis user *******
   register(db, data) {
     return db('tb_user').insert(data, 'user_id');

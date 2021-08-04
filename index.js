@@ -327,6 +327,7 @@ app.post('/registernip/:ow_id', checkAuth, async (req, res, next) => {
   try {
     var ow_id = req.params.ow_id;
     var np_name = req.body.np_name;
+    var np_about = req.body.np_about;
     var np_phone = req.body.np_phone;
     var np_email = req.body.np_email;
     var np_adress = req.body.np_adress;
@@ -337,6 +338,7 @@ app.post('/registernip/:ow_id', checkAuth, async (req, res, next) => {
 
     console.log(ow_id);
     console.log(np_name);
+    console.log(np_about);
     console.log(np_phone);
     console.log(np_email);
     console.log(np_adress);
@@ -346,11 +348,12 @@ app.post('/registernip/:ow_id', checkAuth, async (req, res, next) => {
     // console.log(np_long);
 
     // if (ow_id && np_name && np_phone && np_email && np_adress && np_district && np_province && np_lat && np_long) {
-    if (ow_id && np_name && np_phone && np_email && np_adress && np_district && np_province) {
+    if (ow_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province) {
       // var encPassword = crypto.createHash('md5').update(password).digest('hex');
       var data = {
         ow_id,
         np_name: np_name,
+        np_about: np_about,
         np_phone: np_phone,
         np_email: np_email,
         np_adress: np_adress,
