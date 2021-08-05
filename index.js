@@ -777,6 +777,39 @@ app.post('/uploadsimgnp', function (req, res, next) {
   });
 });
 
+//? add reviews *****************************
+app.post('/addreviews/:user_id', checkAuth, async (req, res, next) => {
+  try {
+    var user_id = req.params.user_id;
+    var np_id = req.body.np_id;
+    var rev_topic = req.body.rev_topic;
+    var rev_detail = req.body.rev_detail;
+    
+
+    console.log(user_id);
+    console.log(np_id);
+    console.log(rev_topic);
+    console.log(rev_detail);
+    
+  if (user_id && np_id && rev_topic && rev_detail) {
+      // var encPassword = crypto.createHash('md5').update(password).digest('hex');
+      var data = {
+        user_id,
+        np_id : np_id,
+        rev_topic: rev_topic,
+        rev_detail: rev_detail,
+      };
+      var rs = await model.addReviews(db, data, user_id);
+      res.send({ ok: true, id: rs[0] });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //! error handlers ***** อย่าออกเกินนี้นะจ๊ะ!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res, next) => {

@@ -131,4 +131,10 @@ module.exports = {
     .insert(data, 'np_img_id');
   },
 
+  //! add reviews *******
+  addReviews(db, data, id) {
+    return db('tb_reviews').insert(data, 'rev_id')
+      .leftJoin('tb_user', 'tb_reviews.id', id, 'tb_user.user_id');
+  },
+
 };
