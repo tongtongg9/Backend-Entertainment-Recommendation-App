@@ -810,6 +810,25 @@ app.post('/addreviews/:user_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดง reviews ให้ user ********************************
+app.get('/getlistreviews/:np_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.np_id;
+
+    console.log(id);
+
+    if (id) {
+      var rss = await model.getListReviews(db, id, 'SELECT * FROM tb_reviews desc');
+      res.send({ ok: true, rowss: rss });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //! error handlers ***** อย่าออกเกินนี้นะจ๊ะ!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 if (process.env.NODE_ENV === 'development') {
   app.use((err, req, res, next) => {

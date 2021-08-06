@@ -137,4 +137,9 @@ module.exports = {
       .leftJoin('tb_user', 'tb_reviews.id', id, 'tb_user.user_id');
   },
 
+  //! แสดง reviews ให้ user *******
+  getListReviews(db, id) {
+    return db('tb_reviews').orderBy('rev_id','desc').where('np_id',id);
+  },
+
 };
