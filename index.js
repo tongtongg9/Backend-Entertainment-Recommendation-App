@@ -290,7 +290,7 @@ app.post('/registerow', async (req, res, next) => {
     var ow_phone = req.body.ow_phone;
     var ow_email = req.body.ow_email;
     var ow_gender = req.body.ow_gender;
-    var ow_age = req.body.ow_age;
+    var ow_bday = req.body.ow_bday;
     console.log(ow_username);
     console.log(ow_password);
     console.log(ow_name);
@@ -298,8 +298,8 @@ app.post('/registerow', async (req, res, next) => {
     console.log(ow_phone);
     console.log(ow_email);
     console.log(ow_gender);
-    console.log(ow_age);
-    if (ow_username && ow_password && ow_name && ow_lastname && ow_phone && ow_email && ow_gender && ow_age) {
+    console.log(ow_bday);
+    if (ow_username && ow_password && ow_name && ow_lastname && ow_phone && ow_email && ow_gender && ow_bday) {
       // var encPassword = crypto.createHash('md5').update(password).digest('hex');
       var data = {
         ow_username: ow_username,
@@ -309,7 +309,7 @@ app.post('/registerow', async (req, res, next) => {
         ow_phone: ow_phone,
         ow_email: ow_email,
         ow_gender: ow_gender,
-        ow_age: ow_age,
+        ow_bday: ow_bday,
       };
       var rs = await model.registerow(db, data);
       res.send({ ok: true, id: rs[0] });

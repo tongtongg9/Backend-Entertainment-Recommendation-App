@@ -32,11 +32,6 @@ module.exports = {
   //   return db('users').orderBy('id');
   // },
 
-  //! แสดงข้อมูลร้าน by Owner *******
-  getListNpbyOw(db, id) {
-    return db('tb_night_place').orderBy('np_id', 'desc').where('ow_id', id);
-  },
-
   // save(db, data) {
   //   return db('users').insert(data, 'id');
   // },
@@ -95,6 +90,11 @@ module.exports = {
     return db('tb_owner')
       .where('ow_id', id);
   },
+
+    //! แสดงข้อมูลร้าน by Owner *******
+    getListNpbyOw(db, id) {
+      return db('tb_night_place').orderBy('np_id', 'desc').where('ow_id', id);
+    },
 
   //! แสดงข้อมูลร้านให้ user *******
   getDataNp(db) {
