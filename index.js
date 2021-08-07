@@ -819,7 +819,7 @@ app.get('/getlistreviews/:np_id', checkAuth, async (req, res, next) => {
 
     if (id) {
       var rss = await model.getListReviews(db, id, 'SELECT * FROM tb_reviews desc');
-      res.send({ ok: true, rowss: rss });
+      res.send({ ok: true, rowsrev: rss });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
