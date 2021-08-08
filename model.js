@@ -139,7 +139,19 @@ module.exports = {
 
   //! แสดง list reviews ให้ user *******
   getListReviews(db, id) {
-    return db('tb_reviews').orderBy('rev_id','desc').where('np_id',id);
+    return db('tb_reviews').orderBy('rev_id','desc')
+    .where('tb_reviews.np_id',id)
+    .leftJoin('tb_user', 'tb_reviews.user_id','tb_user.user_id')
+    .select('*');
+  },
+
+  //! แสดง list reviews ให้ user limit 3 *******
+  getListReviewsLimit(db, id) {
+    return db('tb_reviews').orderBy('rev_id','desc')
+    .where('tb_reviews.np_id',id)
+    .leftJoin('tb_user', 'tb_reviews.user_id','tb_user.user_id')
+    .select('*')
+    .limit(3);
   },
 
 };
