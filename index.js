@@ -829,19 +829,30 @@ app.get('/getlistreviews/:np_id', checkAuth, async (req, res, next) => {
   }
 });
 
-//! error handlers ***** อย่าออกเกินนี้นะจ๊ะ!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-if (process.env.NODE_ENV === 'development') {
-  app.use((err, req, res, next) => {
-    console.log(err.stack);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      error: {
-        ok: false,
-        code: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      }
-    });
-  });
-}
+ //? แสดง Feed Review ให้ user *******
+ app.get('/showfeed',checkAuth, async (req, res, next) => {
+  try {
+    var rs = await model.getListReviewsFeed(db);
+    res.send({ ok: true, showfeed: rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+// //! error handlers ***** อย่าออกเกินนี้นะจ๊ะ!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// if (process.env.NODE_ENV === 'development') {
+//   app.use((err, req, res, next) => {
+//     console.log(err.stack);
+//     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+//       error: {
+//         ok: false,
+//         code: HttpStatus.INTERNAL_SERVER_ERROR,
+//         error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+//       }
+//     });
+//   });
+// }
 
 //? แสดง reviews ให้ user limit 3 ********************************
 app.get('/getlistreviewslimit/:np_id', checkAuth, async (req, res, next) => {

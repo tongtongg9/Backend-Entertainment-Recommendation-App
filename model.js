@@ -35,7 +35,7 @@ module.exports = {
   // save(db, data) {
   //   return db('users').insert(data, 'id');
   // },
-  
+
   //! regis user *******
   register(db, data) {
     return db('tb_user').insert(data, 'user_id');
@@ -91,25 +91,25 @@ module.exports = {
       .where('ow_id', id);
   },
 
-    //! แสดงข้อมูลร้าน by Owner *******
-    getListNpbyOw(db, id) {
-      return db('tb_night_place').orderBy('np_id', 'desc').where('ow_id', id);
-    },
+  //! แสดงข้อมูลร้าน by Owner *******
+  getListNpbyOw(db, id) {
+    return db('tb_night_place').orderBy('np_id', 'desc').where('ow_id', id);
+  },
 
   //! แสดงข้อมูลร้านให้ user *******
   getDataNp(db) {
     return db('tb_night_place').orderBy('np_id', 'desc');
   },
 
-  getListImagesNp(db,id) {
-    return db('tb_night_place_imgs').where('tb_night_place_imgs.np_id',id)
-    .select('*')
+  getListImagesNp(db, id) {
+    return db('tb_night_place_imgs').where('tb_night_place_imgs.np_id', id)
+      .select('*')
     // .leftJoin('tb_night_place_imgs', 'tb_night_place.np_id,tb_night_place_imgs.np_id');
   },
 
   getImagesNp(db) {
     return db('tb_night_place').orderBy('np_id', 'desc')
-    .leftJoin('tb_night_place_imgs', 'tb_night_place.np_id,tb_night_place_imgs.np_id');
+      .leftJoin('tb_night_place_imgs', 'tb_night_place.np_id,tb_night_place_imgs.np_id');
   },
 
   //! Get ข้อมูลร้าน *******
@@ -128,7 +128,7 @@ module.exports = {
   //! upload immage np *******
   uploadImagesnp(db, data) {
     return db('tb_night_place_imgs')
-    .insert(data, 'np_img_id');
+      .insert(data, 'np_img_id');
   },
 
   //! add reviews *******
@@ -139,19 +139,25 @@ module.exports = {
 
   //! แสดง list reviews ให้ user *******
   getListReviews(db, id) {
-    return db('tb_reviews').orderBy('rev_id','desc')
-    .where('tb_reviews.np_id',id)
-    .leftJoin('tb_user', 'tb_reviews.user_id','tb_user.user_id')
-    .select('*');
+    return db('tb_reviews').orderBy('rev_id', 'desc')
+      .where('tb_reviews.np_id', id)
+      .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+      .select('*');
   },
 
   //! แสดง list reviews ให้ user limit 3 *******
   getListReviewsLimit(db, id) {
-    return db('tb_reviews').orderBy('rev_id','desc')
-    .where('tb_reviews.np_id',id)
-    .leftJoin('tb_user', 'tb_reviews.user_id','tb_user.user_id')
-    .select('*')
-    .limit(3);
+    return db('tb_reviews').orderBy('rev_id', 'desc')
+      .where('tb_reviews.np_id', id)
+      .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+      .select('*')
+      .limit(3);
   },
-
+  //! แสดง Feed Review ให้ user  *******
+  getListReviewsFeed(db) {
+    return db('tb_reviews').orderBy('rev_id', 'desc')
+      .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+      .leftJoin('tb_night_place', 'tb_reviews.np_id', 'tb_night_place.np_id')
+      .select('*');
+  },
 };
