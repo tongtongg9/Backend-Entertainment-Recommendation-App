@@ -245,7 +245,7 @@ app.post('/register', async (req, res, next) => {
     var user_gender = req.body.user_gender;
     // var user_age = req.body.user_age;
     var user_bday = req.body.user_bday;
-    
+
     console.log(user_username);
     console.log(user_password);
     console.log(user_name);
@@ -256,7 +256,7 @@ app.post('/register', async (req, res, next) => {
     // console.log(user_age);
     console.log(user_bday);
     // if (user_username && user_password && user_name && user_lastname && user_phone && user_email && user_gender && user_age) {
-      if (user_username && user_password && user_name && user_lastname && user_phone && user_email && user_gender && user_bday) {
+    if (user_username && user_password && user_name && user_lastname && user_phone && user_email && user_gender && user_bday) {
       // var encPassword = crypto.createHash('md5').update(password).digest('hex');
       var data = {
         user_username: user_username,
@@ -555,8 +555,8 @@ app.get('/getdatanpbyow/:ow_id', checkAuth, async (req, res, next) => {
   }
 });
 
- //? แสดงข้อมูลร้านให้ user *******
-app.get('/shownpforuser',checkAuth, async (req, res, next) => {
+//? แสดงข้อมูลร้านให้ user *******
+app.get('/shownpforuser', checkAuth, async (req, res, next) => {
   try {
     var rs = await model.getDataNp(db, 'SELECT * FROM activity ORDER BY ac_id DESC');
     res.send({ ok: true, rows: rs });
@@ -566,13 +566,28 @@ app.get('/shownpforuser',checkAuth, async (req, res, next) => {
   }
 });
 
- //? แสดงรูปร้านให้ user (list)*******
- app.get('/showimgnpforuser/:np_id',checkAuth, async (req, res, next) => {
+//? แสดงรูปร้านให้ user (list)*******
+app.get('/showimgnpforuser/:np_id', checkAuth, async (req, res, next) => {
   try {
     var id = req.params.np_id;
 
     var rs = await model.getListImagesNp(db, id);
-    res.send({ ok: true, imgsrows: rs});
+    res.send({ ok: true, imgsrows: rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? แสดงรูปร้านให้ user  ********************************
+app.get('/showimgnpforuser', checkAuth, async (req, res, next) => {
+  try {
+
+    var rs = await model.getImagesNp(db);
+    res.send({ ok: true, imgnp: rs });
+
+    res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+
   } catch (error) {
     console.log(error);
     res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
@@ -586,7 +601,7 @@ app.get('/shownpforuser',checkAuth, async (req, res, next) => {
 //     // console.log(id);
 //     var rs = await model.getInfoNp(db);
 //       res.send({ ok: true, info: rs[0] });
-    
+
 //   } catch (error) {
 //     console.log(error);
 //     res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
@@ -631,8 +646,8 @@ const uploadprofileusers = multer({
 //อัพโหลดรูปภาพแจ้งซ่อม (Sendrepair Upload IMG)
 var fileImageName = '';
 
-async function uploadImgProfileUser(db, data,id) {
-  return await model.sendImages(db, data,id);
+async function uploadImgProfileUser(db, data, id) {
+  return await model.sendImages(db, data, id);
 }
 
 
@@ -660,13 +675,105 @@ app.put('/uploads/:user_id', function (req, res, next) {
           console.log(user_id);
           console.log(req.files[0].filename);
           console.log(fileImageName);
-          
+
 
           if (user_id && fileImageName) {
             var data = {
               user_img: fileImageName
             };
-            var rs = uploadImgProfileUser(db, data ,user_id);
+            var rs = uploadImgProfileUser(db, data, user_id);
+            // console.log(rs);
+
+            return res.send({ ok: true, id: rs[0] });
+          } else {
+            res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+          }
+        } catch (error) {
+          console.log(error);
+          res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+        }
+        // insert db 
+        // get RN_NO last insert
+        // 
+      }
+    }
+  });
+});
+
+// ? upload immage profile np ------------------------------------------------------------------
+app.use('/public', express.static('public')); app.use('/img_np', express.static('img_np'));
+
+// Set The Storage Engine
+const profilenpstorage = multer.diskStorage({
+  destination: './uploads/img_np',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+function checkFileType(file, cb) {
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png|gif/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+  return cb(null, true);
+
+  // if(mimetype && extname){
+  //   return cb(null,true);
+  // } else {
+  //   cb('Error: Images Only!');
+  // }
+}
+
+const uploadprofilenp = multer({
+  storage: profilenpstorage,
+  limits: { fileSize: 20480000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  }
+}).array('picture', 12);
+
+//อัพโหลดรูปภาพแจ้งซ่อม (Sendrepair Upload IMG)
+var fileImageName = '';
+
+async function uploadImgProfileNp(db, data, id) {
+  return await model.uploadImagesProfilenp(db, data, id);
+}
+
+
+// async function getRN_NO(){
+//   return await model.getRNNO(db);
+// } 
+
+app.put('/uploadsprofilenp/:np_id', function (req, res, next) {
+  uploadprofilenp(req, res, (err) => {
+    if (err) {
+      console.log('error : ' + err)
+
+    } else {
+      if (req.files[0].filename == undefined) {
+        console.log('Error: No File Selected')
+
+      } else {
+        console.log(`uploads/${req.files[0].filename}`);
+
+        try {
+          var np_id = req.params.np_id;
+
+          //นำ path รูปมาเก็บไว้ใน ตัวแปร
+          fileImageName = req.files[0].filename;
+          console.log(np_id);
+          console.log(req.files[0].filename);
+          console.log(fileImageName);
+
+
+          if (np_id && fileImageName) {
+            var data = {
+              np_imgs: fileImageName
+            };
+            var rs = uploadImgProfileNp(db, data, np_id);
             // console.log(rs);
 
             return res.send({ ok: true, id: rs[0] });
@@ -687,7 +794,7 @@ app.put('/uploads/:user_id', function (req, res, next) {
 
 
 // ? upload immage np ------------------------------------------------------------------
-app.use('/public', express.static('public'));  app.use('/images_np', express.static('images_np'));
+app.use('/public', express.static('public')); app.use('/images_np', express.static('images_np'));
 
 // Set The Storage Engine
 const imgsnpstorage = multer.diskStorage({
@@ -715,11 +822,11 @@ function checkFileType(file, cb) {
 
 const uploadimgsnp = multer({
   storage: imgsnpstorage,
-  limits:{fileSize:20480000},
-  fileFilter: function(req,file,cb) {
-    checkFileType(file,cb);
+  limits: { fileSize: 20480000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
   }
-}).array('picture',12);
+}).array('picture', 12);
 
 //อัพโหลดรูปภาพแจ้งซ่อม (Sendrepair Upload IMG)
 var fileImageName = '';
@@ -784,18 +891,18 @@ app.post('/addreviews/:user_id', checkAuth, async (req, res, next) => {
     var np_id = req.body.np_id;
     var rev_topic = req.body.rev_topic;
     var rev_detail = req.body.rev_detail;
-    
+
 
     console.log(user_id);
     console.log(np_id);
     console.log(rev_topic);
     console.log(rev_detail);
-    
-  if (user_id && np_id && rev_topic && rev_detail) {
+
+    if (user_id && np_id && rev_topic && rev_detail) {
       // var encPassword = crypto.createHash('md5').update(password).digest('hex');
       var data = {
         user_id,
-        np_id : np_id,
+        np_id: np_id,
         rev_topic: rev_topic,
         rev_detail: rev_detail,
       };
@@ -811,6 +918,7 @@ app.post('/addreviews/:user_id', checkAuth, async (req, res, next) => {
 });
 
 //? แสดง reviews ให้ user ********************************
+//!------------------------------------
 app.get('/getlistreviews/:np_id', checkAuth, async (req, res, next) => {
   try {
     var id = req.params.np_id;
@@ -829,8 +937,8 @@ app.get('/getlistreviews/:np_id', checkAuth, async (req, res, next) => {
   }
 });
 
- //? แสดง Feed Review ให้ user *******
- app.get('/showfeed',checkAuth, async (req, res, next) => {
+//? แสดง Feed Review ให้ user *******
+app.get('/showfeed', checkAuth, async (req, res, next) => {
   try {
     var rs = await model.getListReviewsFeed(db);
     res.send({ ok: true, showfeed: rs });
