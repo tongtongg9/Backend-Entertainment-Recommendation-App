@@ -92,14 +92,30 @@ module.exports = {
   },
 
   //! แสดงข้อมูลร้าน by Owner *******
+  // getListNpbyOw(db, id) {
+  //   return db('tb_night_place')
+  //   .orderBy('np_id', 'desc')
+  //   .where('ow_id', id);
+  // },
   getListNpbyOw(db, id) {
-    return db('tb_night_place').orderBy('np_id', 'desc').where('ow_id', id);
+    return db('tb_night_place_imgs_profile').orderBy('imgspro_id', 'desc')
+    .where('ow_id', id)
+    .leftJoin('tb_night_place', 'tb_night_place_imgs_profile.np_id', 'tb_night_place.np_id')
+    .select('*');
   },
 
   //! แสดงข้อมูลร้านให้ user *******
+  // getDataNp(db) {
+  //   return db('tb_night_place').orderBy('np_id', 'desc')
+  //   // .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place.np_id')
+  //   // .select('*');
+  // },
   getDataNp(db) {
-    return db('tb_night_place').orderBy('np_id', 'desc')
+    return db('tb_night_place_imgs_profile').orderBy('imgspro_id', 'desc')
+    .leftJoin('tb_night_place', 'tb_night_place_imgs_profile.np_id', 'tb_night_place.np_id')
+    .select('*');
   },
+
 
   //! แสดงข้อมูลร้านให้ user test*******
   // getDataNp(db) {
@@ -121,7 +137,7 @@ module.exports = {
       .leftJoin('tb_night_place', 'tb_night_place_imgs.np_id', 'tb_night_place.np_id')
       // .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
       .select('*')
-      // .limit(1);
+    // .limit(1);
   },
 
   //! Get ข้อมูลร้าน *******
@@ -136,10 +152,11 @@ module.exports = {
   sendImages(db, data, id) {
     return db('tb_user').where('user_id', id).update(data);
   },
-  
+
   //! upload immage profile np  *******
-  uploadImagesProfilenp(db, data, id) {
-    return db('tb_night_place').where('np_id', id).update(data);
+  uploadImagesProfilenp(db, data) {
+    return db('tb_night_place_imgs_profile')
+      .insert(data, 'imgspro_id');
   },
 
   //! upload immage np *******

@@ -558,7 +558,7 @@ app.get('/getdatanpbyow/:ow_id', checkAuth, async (req, res, next) => {
 //? แสดงข้อมูลร้านให้ user *******
 app.get('/shownpforuser', checkAuth, async (req, res, next) => {
   try {
-    var rs = await model.getDataNp(db, 'SELECT * FROM activity ORDER BY ac_id DESC');
+    var rs = await model.getDataNp(db);
     res.send({ ok: true, rows: rs });
   } catch (error) {
     console.log(error);
@@ -736,10 +736,10 @@ const uploadprofilenp = multer({
 }).array('picture', 12);
 
 //อัพโหลดรูปภาพแจ้งซ่อม (Sendrepair Upload IMG)
-var fileImageName = '';
+var fileProImageName = '';
 
-async function uploadImgProfileNp(db, data, id) {
-  return await model.uploadImagesProfilenp(db, data, id);
+async function uploadImgProfileNp(db, data) {
+  return await model.uploadImagesProfilenp(db, data);
 }
 
 
@@ -747,7 +747,7 @@ async function uploadImgProfileNp(db, data, id) {
 //   return await model.getRNNO(db);
 // } 
 
-app.put('/uploadsprofilenp/:np_id', function (req, res, next) {
+app.post('/uploadsprofilenp', function (req, res, next) {
   uploadprofilenp(req, res, (err) => {
     if (err) {
       console.log('error : ' + err)
@@ -760,21 +760,22 @@ app.put('/uploadsprofilenp/:np_id', function (req, res, next) {
         console.log(`uploads/${req.files[0].filename}`);
 
         try {
-          var np_id = req.params.np_id;
+          
+          var np_id = model.getInfoNp(db);
 
           //นำ path รูปมาเก็บไว้ใน ตัวแปร
-          fileImageName = req.files[0].filename;
+          fileProImageName = req.files[0].filename;
           console.log(np_id);
           console.log(req.files[0].filename);
-          console.log(fileImageName);
+          console.log(fileProImageName);
 
-
-          if (np_id && fileImageName) {
+          if (np_id && fileProImageName) {
             var data = {
-              np_imgs: fileImageName
+              np_id: np_id,
+              np_imgspro: fileProImageName
             };
-            var rs = uploadImgProfileNp(db, data, np_id);
-            // console.log(rs);
+            var rs = uploadImgProfileNp(db, data);
+            console.log(rs);
 
             return res.send({ ok: true, id: rs[0] });
           } else {
