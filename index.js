@@ -613,6 +613,25 @@ app.get('/getbookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดง Bookings ให้ owner ********************************
+app.get('/getbookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.ow_id;
+
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getBookingsbyow(db, id);
+      res.send({ ok: true, rsbookbyow : rs });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? TEST GET
 // app.get('/testget', async (req, res, next) => {
 //   try {
