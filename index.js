@@ -651,9 +651,9 @@ async function uploadImgProfileUser(db, data, id) {
 }
 
 
-// async function getRN_NO(){
+// async function getRN_NO()
 //   return await model.getRNNO(db);
-// } 
+// } f
 
 app.put('/uploads/:user_id', function (req, res, next) {
   uploadprofileusers(req, res, (err) => {
@@ -918,6 +918,38 @@ app.post('/addreviews/:user_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? add bookings *****************************
+app.post('/addbookings/:user_id', checkAuth, async (req, res, next) => {
+  try {
+    var user_id = req.params.user_id;
+    var np_id = req.body.np_id;
+    var bk_seat = req.body.bk_seat;
+    var bk_detail = req.body.bk_detail;
+
+    console.log(user_id);
+    console.log(np_id);
+    console.log(bk_seat);
+    console.log(bk_detail);
+
+    if (user_id && np_id && bk_seat && bk_detail) {
+      // var encPassword = crypto.createHash('md5').update(password).digest('hex');
+      var data = {
+        user_id,
+        np_id: np_id,
+        bk_seat: bk_seat,
+        bk_detail: bk_detail,
+      };
+      var rs = await model.addBookings(db, data, user_id);
+      res.send({ ok: true, id: rs[0] });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? แสดง reviews ให้ user ********************************
 //!------------------------------------
 app.get('/getlistreviews/:np_id', checkAuth, async (req, res, next) => {
@@ -948,20 +980,6 @@ app.get('/showfeed', checkAuth, async (req, res, next) => {
     res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
   }
 });
-
-// //! error handlers ***** อย่าออกเกินนี้นะจ๊ะ!!!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-// if (process.env.NODE_ENV === 'development') {
-//   app.use((err, req, res, next) => {
-//     console.log(err.stack);
-//     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-//       error: {
-//         ok: false,
-//         code: HttpStatus.INTERNAL_SERVER_ERROR,
-//         error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-//       }
-//     });
-//   });
-// }
 
 //? แสดง reviews ให้ user limit 3 ********************************
 app.get('/getlistreviewslimit/:np_id', checkAuth, async (req, res, next) => {

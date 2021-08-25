@@ -195,4 +195,11 @@ module.exports = {
       .leftJoin('tb_night_place', 'tb_reviews.np_id', 'tb_night_place.np_id')
       .select('*');
   },
+
+  //! add bookings *******
+  addBookings(db, data, id) {
+    return db('tb_booking').insert(data, 'bk_id')
+      .leftJoin('tb_user', 'tb_booking.id', id, 'tb_user.user_id');
+  },
+
 };
