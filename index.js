@@ -484,6 +484,33 @@ app.put('/updateownip/:np_id', checkAuth, async (req, res, next) => {
   }
 });
 
+
+//? update status ***********************
+app.put('/updatestatus/:bk_id', checkAuth, async (req, res, next) => {
+  try {
+    var bk_id = req.params.bk_id;
+    var bk_status = req.body.bk_status;
+
+    console.log(bk_id);
+    console.log(bk_status);
+
+    if (bk_id && bk_status) {
+      var data = {
+        bk_status: bk_status,
+        
+      };
+      var rs = await model.updateBookingsstatus(db, data, bk_id);
+      res.send({ ok: true });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
 app.delete('/users/:id', checkAuth, async (req, res, next) => {
   try {
     var id = req.params.id;
@@ -603,7 +630,7 @@ app.get('/getbookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
 
     if (id) {
       var rs = await model.getBookingsbyuser(db, id);
-      res.send({ ok: true, rsbookbyuser : rs });
+      res.send({ ok: true, rsbookbyuser: rs });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
@@ -622,7 +649,7 @@ app.get('/getbookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
 
     if (id) {
       var rs = await model.getBookingsbyow(db, id);
-      res.send({ ok: true, rsbookbyow : rs });
+      res.send({ ok: true, rsbookbyow: rs });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
@@ -798,7 +825,7 @@ app.post('/uploadsprofilenp', function (req, res, next) {
         console.log(`uploads/${req.files[0].filename}`);
 
         try {
-          
+
           var np_id = model.getInfoNp(db);
 
           //นำ path รูปมาเก็บไว้ใน ตัวแปร

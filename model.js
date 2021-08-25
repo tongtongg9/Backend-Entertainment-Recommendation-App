@@ -215,9 +215,22 @@ module.exports = {
   getBookingsbyow(db, id) {
     return db('tb_booking').orderBy('bk_id', 'desc')
       .where('ow_id', id)
-      // .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+      .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
       .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
       .select('*');
   },
+  //! update status *******
+  updateBookingsstatus(db, data, id) {
+    return db('tb_booking')
+    .where('bk_id',id)
+    .update(data,id)
+    
+      // .leftJoin('tb_user', 'tb_booking.id', id, 'tb_user.user_id');
+  },
 
+  // updateOw(db, id, data) {
+  //   return db('tb_owner')
+  //     .where('ow_id', id)
+  //     .update(data);
+  // },
 };
