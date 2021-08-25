@@ -594,6 +594,25 @@ app.get('/showimgnpforuser', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดง Bookings ให้ user ********************************
+app.get('/getbookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.user_id;
+
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getBookingsbyuser(db, id);
+      res.send({ ok: true, rsbookbyuser : rs });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? TEST GET
 // app.get('/testget', async (req, res, next) => {
 //   try {
