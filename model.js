@@ -126,8 +126,9 @@ module.exports = {
   // },
 
   getListImagesNp(db, id) {
-    return db('tb_night_place_imgs').where('tb_night_place_imgs.np_id', id)
-      .select('*')
+    return db('tb_night_place_imgs')
+    .where('tb_night_place_imgs.np_id', id)
+    .select('*')
     // .leftJoin('tb_night_place_imgs', 'tb_night_place.np_id,tb_night_place_imgs.np_id');
   },
 
@@ -219,13 +220,12 @@ module.exports = {
       .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
       .select('*');
   },
+
   //! update status *******
   updateBookingsstatus(db, data, id) {
     return db('tb_booking')
-    .where('bk_id',id)
-    .update(data,id)
-    
-      // .leftJoin('tb_user', 'tb_booking.id', id, 'tb_user.user_id');
+      .where('bk_id', id)
+      .update(data)
   },
 
   // updateOw(db, id, data) {

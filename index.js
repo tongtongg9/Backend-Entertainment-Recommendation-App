@@ -500,6 +500,7 @@ app.put('/updatestatus/:bk_id', checkAuth, async (req, res, next) => {
         
       };
       var rs = await model.updateBookingsstatus(db, data, bk_id);
+      console.log(rs);
       res.send({ ok: true });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
