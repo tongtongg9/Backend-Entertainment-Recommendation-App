@@ -991,19 +991,23 @@ app.post('/addbookings/:user_id', checkAuth, async (req, res, next) => {
     var np_id = req.body.np_id;
     var bk_seat = req.body.bk_seat;
     var bk_detail = req.body.bk_detail;
-
+    var bk_checkin_date = req.body.bk_checkin_date;
+    
+   
     console.log(user_id);
     console.log(np_id);
     console.log(bk_seat);
     console.log(bk_detail);
+    console.log(bk_checkin_date);
 
-    if (user_id && np_id && bk_seat && bk_detail) {
+    if (user_id && np_id && bk_seat && bk_detail && bk_checkin_date) {
       // var encPassword = crypto.createHash('md5').update(password).digest('hex');
       var data = {
         user_id,
         np_id: np_id,
         bk_seat: bk_seat,
         bk_detail: bk_detail,
+         bk_checkin_date:  bk_checkin_date,
       };
       var rs = await model.addBookings(db, data, user_id);
       res.send({ ok: true, id: rs[0] });

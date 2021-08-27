@@ -206,8 +206,8 @@ module.exports = {
   //! แสดง Bookings ให้ user  *******
   getBookingsbyuser(db, id) {
     return db('tb_booking').orderBy('bk_id', 'desc')
-      .where('user_id', id)
-      // .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+      .where('tb_booking.user_id', id)
+      .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
       .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
       .select('*');
   },
