@@ -437,43 +437,45 @@ app.put('/updateowner/:ow_id', checkAuth, async (req, res, next) => {
   }
 });
 
-//? แก้ไขข้อมูล Owner ***********************
+//? แก้ไขข้อมูล np ***********************
 app.put('/updateownip/:np_id', checkAuth, async (req, res, next) => {
   try {
-    var id = req.params.np_id;
+    var np_id = req.params.np_id;
     var np_name = req.body.np_name;
-    var np_lastname = req.body.np_lastname;
+    var np_about = req.body.np_about;
     var np_phone = req.body.np_phone;
     var np_email = req.body.np_email;
     var np_adress = req.body.np_adress;
     var np_district = req.body.np_district;
-    var np_province = req.body.np_provinceil;
-    var np_lat = req.body.np_latil;
-    var np_long = req.body.np_long;
+    var np_province = req.body.np_province;
+    // var np_lat = req.body.np_lat;
+    // var np_long = req.body.np_long;
 
+    console.log(np_id);
     console.log(np_name);
-    console.log(np_lastname);
+    console.log(np_about);
     console.log(np_phone);
     console.log(np_email);
     console.log(np_adress);
     console.log(np_district);
     console.log(np_province);
-    console.log(np_lat);
-    console.log(np_long);
+    // console.log(np_lat);
+    // console.log(np_long);
 
-    if (id && np_name && np_lastname && np_phone && np_email && np_adress && np_district && np_province && np_lat && np_long) {
+    // if (np_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province && np_lat && np_long) {
+      if (np_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province) {
       var data = {
         np_name: np_name,
-        np_lastname: np_lastname,
+        np_about: np_about,
         np_phone: np_phone,
         np_email: np_email,
         np_adress: np_adress,
         np_district: np_district,
         np_province: np_province,
-        np_lat: np_lat,
-        np_long: np_long
+        // np_lat: np_lat,
+        // np_long: np_long
       };
-      var rs = await model.updatenip(db, id, data);
+      var rs = await model.updatenip(db, np_id, data);
       res.send({ ok: true });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
@@ -500,6 +502,32 @@ app.put('/updatestatus/:bk_id', checkAuth, async (req, res, next) => {
         
       };
       var rs = await model.updateBookingsstatus(db, data, bk_id);
+      console.log(rs);
+      res.send({ ok: true });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? update status ***********************
+app.put('/updatestatusnp/:np_id', checkAuth, async (req, res, next) => {
+  try {
+    var np_id = req.params.np_id;
+    var np_bk_status = req.body.np_bk_status;
+
+    console.log(np_id);
+    console.log(np_bk_status);
+
+    if (np_id && np_bk_status) {
+      var data = {
+        np_bk_status: np_bk_status,
+        
+      };
+      var rs = await model.updateStatusNp(db, data, np_id);
       console.log(rs);
       res.send({ ok: true });
     } else {

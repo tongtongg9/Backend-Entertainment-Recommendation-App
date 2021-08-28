@@ -69,7 +69,7 @@ module.exports = {
   //! แก้ไขข้อมูล nip. *******
   updatenip(db, id, data) {
     return db('tb_night_place')
-      .where('np_id', id)
+      .where('tb_night_place.np_id', id)
       .update(data);
   },
 
@@ -227,6 +227,13 @@ module.exports = {
       .where('bk_id', id)
       .update(data)
   },
+
+    //! update status np  booking  *******
+    updateStatusNp(db, data, id) {
+      return db('tb_night_place')
+        .where('np_id', id)
+        .update(data)
+    },
 
   // updateOw(db, id, data) {
   //   return db('tb_owner')
