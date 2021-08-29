@@ -106,9 +106,9 @@ module.exports = {
 
   //! แสดงข้อมูลร้านให้ user *******
   // getDataNp(db) {
-  //   return db('tb_night_place').orderBy('np_id', 'desc')
-  //   // .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place.np_id')
-  //   // .select('*');
+  //   return db('tb_night_place').orderBy('tb_nigh.t_placenp_id', 'desc')
+  //   .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.imgspro_id', 'tb_night_place.imgspro_id')
+  //   .select('*');
   // },
   getDataNp(db) {
     return db('tb_night_place_imgs_profile').orderBy('imgspro_id', 'desc')
