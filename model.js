@@ -127,8 +127,8 @@ module.exports = {
 
   getListImagesNp(db, id) {
     return db('tb_night_place_imgs')
-    .where('tb_night_place_imgs.np_id', id)
-    .select('*')
+      .where('tb_night_place_imgs.np_id', id)
+      .select('*')
     // .leftJoin('tb_night_place_imgs', 'tb_night_place.np_id,tb_night_place_imgs.np_id');
   },
 
@@ -141,7 +141,7 @@ module.exports = {
     // .limit(1);
   },
 
-  //! Get ข้อมูลร้าน *******
+  //! Get Info ข้อมูลร้าน *******
   getInfoNp(db) {
     return db('tb_night_place')
       .orderBy('np_id', 'desc')
@@ -151,7 +151,9 @@ module.exports = {
 
   //! upload immage profile user *******
   sendImages(db, data, id) {
-    return db('tb_user').where('user_id', id).update(data);
+    return db('tb_user')
+      .where('user_id', id)
+      .update(data);
   },
 
   //! upload immage profile np  *******
@@ -228,16 +230,53 @@ module.exports = {
       .update(data)
   },
 
-    //! update status np  booking  *******
-    updateStatusNp(db, data, id) {
-      return db('tb_night_place')
-        .where('np_id', id)
-        .update(data)
-    },
+  //! update status np  booking  *******
+  updateStatusNp(db, data, id) {
+    return db('tb_night_place')
+      .where('np_id', id)
+      .update(data)
+  },
 
-  // updateOw(db, id, data) {
-  //   return db('tb_owner')
-  //     .where('ow_id', id)
-  //     .update(data);
+  //! add Promotions *******
+  addPromotions(db, data, id) {
+    return db('tb_promotions').insert(data, 'pro_id')
+      .leftJoin('tb_user', 'tb_promotions.id', id, 'tb_night_place.np_id');
+  },
+
+  //! แสดง Promotions *******
+  getPromotions(db) {
+    return db('tb_promotions').orderBy('tb_promotions.pro_id', 'desc')
+    // .where('tb_promotions.np_id', id)
+    .leftJoin('tb_promotions_img', 'tb_promotions.pro_id', 'tb_promotions_img.pro_id')
+    .select('*');
+  },
+
+  //! Get Info  Promotions  *******
+  getInfoPromotions(db) {
+    return db('tb_promotions')
+      .orderBy('pro_id', 'desc')
+      .select('tb_promotions.pro_id')
+      .limit(1);
+  },
+
+  //! upload immage Promotions  *******
+  uploadImagesPromotions(db, data) {
+    return db('tb_promotions_img')
+      .insert(data, 'id_img_pro');
+  },
+
+    //! แสดง image Promotions ให้ user *******
+  getImagesPromotions(db) {
+    return db('tb_promotions_img').orderBy('id_img_pro', 'desc')
+  },
+
+  // getImagesNp(db) {
+  //   return db('tb_night_place_imgs').orderBy('np_img_id', 'desc'.limit(1))
+  //     .leftJoin('tb_night_place', 'tb_night_place_imgs.np_id', 'tb_night_place.np_id')
+  //     // .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+  //     .select('*')
+  //   // .limit(1);
   // },
+  
+
 };

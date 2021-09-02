@@ -688,6 +688,21 @@ app.get('/getbookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดง image Promotions ให้ user  ********************************
+app.get('/showimgproforuser', checkAuth, async (req, res, next) => {
+  try {
+
+    var rs = await model.getImagesPromotions(db);
+    res.send({ ok: true, imgpro: rs });
+
+    res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? TEST GET
 // app.get('/testget', async (req, res, next) => {
 //   try {
@@ -869,6 +884,101 @@ app.post('/uploadsprofilenp', function (req, res, next) {
               np_imgspro: fileProImageName
             };
             var rs = uploadImgProfileNp(db, data);
+            console.log(rs);
+
+            return res.send({ ok: true, id: rs[0] });
+          } else {
+            res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+          }
+        } catch (error) {
+          console.log(error);
+          res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+        }
+        // insert db 
+        // get RN_NO last insert
+        // 
+      }
+    }
+  });
+});
+
+
+// ? upload immage Promotions  ------------------------------------------------------------------
+app.use('/public', express.static('public')); app.use('/img_pro', express.static('img_pro'));
+
+// Set The Storage Engine
+const promotionstorage = multer.diskStorage({
+  destination: './uploads/img_pro',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+function checkFileType(file, cb) {
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png|gif/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+  
+  return cb(null, true);
+
+  // if(mimetype && extname){
+  //   return cb(null,true);
+  // } else {
+  //   cb('Error: Images Only!');
+  // }
+}
+
+const uploadpromotions = multer({
+  storage: promotionstorage,
+  limits: { fileSize: 20480000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  }
+}).array('picture', 12);
+
+//อัพโหลดรูปภาพแจ้งซ่อม (Sendrepair Upload IMG)
+var filePromotionsImageName = '';
+
+async function uploadImgPromotions(db, data) {
+  return await model.uploadImagesPromotions(db, data);
+}
+
+
+// async function getRN_NO(){
+//   return await model.getRNNO(db);
+// } 
+
+app.post('/uploadsimgpromotions', function (req, res, next) {
+  uploadpromotions(req, res, (err) => {
+    if (err) {
+      console.log('error : ' + err)
+
+    } else {
+      if (req.files[0].filename == undefined) {
+        console.log('Error: No File Selected')
+
+      } else {
+        console.log(`uploads/${req.files[0].filename}`);
+
+        try {
+
+          var pro_id = model.getInfoPromotions(db);
+
+          //นำ path รูปมาเก็บไว้ใน ตัวแปร
+          filePromotionsImageName = req.files[0].filename;
+          console.log(pro_id);
+          console.log(req.files[0].filename);
+          console.log(filePromotionsImageName);
+
+          if (pro_id && filePromotionsImageName) {
+            var data = {
+              pro_id : pro_id,
+              pro_img : filePromotionsImageName
+            };
+            var rs = uploadImgPromotions(db, data);
             console.log(rs);
 
             return res.send({ ok: true, id: rs[0] });
@@ -1089,6 +1199,54 @@ app.get('/getlistreviewslimit/:np_id', checkAuth, async (req, res, next) => {
     if (id) {
       var rss = await model.getListReviewsLimit(db, id);
       res.send({ ok: true, revlimit: rss });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? แสดง Promotions ******* *******
+app.get('/showpromotions', checkAuth, async (req, res, next) => {
+  try {
+    var rs = await model.getPromotions(db);
+    res.send({ ok: true, showpromotions : rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
+//? add Promotions ************************************
+app.post('/addpromotions/:np_id', checkAuth, async (req, res, next) => {
+  try {
+    
+    var np_id = req.params.np_id;
+    var pro_topic = req.body.pro_topic;
+    var pro_detail = req.body.pro_detail;
+    var pro_start = req.body.pro_start;
+    var pro_end = req.body.pro_end;
+
+    console.log(np_id);
+    console.log(pro_topic);
+    console.log(pro_detail);
+    console.log(pro_start);
+    console.log(pro_end);
+
+    if (np_id && pro_topic && pro_detail && pro_start && pro_end) {
+      // var encPassword = crypto.createHash('md5').update(password).digest('hex');
+      var data = {
+        np_id,
+        pro_topic: pro_topic,
+        pro_detail: pro_detail,
+        pro_start: pro_start,
+        pro_end: pro_end,
+      };
+      var rs = await model.addPromotions(db, data, np_id);
+      res.send({ ok: true, id: rs[0] });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
