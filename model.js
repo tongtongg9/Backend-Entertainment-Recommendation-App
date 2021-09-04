@@ -248,6 +248,7 @@ module.exports = {
     return db('tb_promotions').orderBy('tb_promotions.pro_id', 'desc')
     // .where('tb_promotions.np_id', id)
     .leftJoin('tb_promotions_img', 'tb_promotions.pro_id', 'tb_promotions_img.pro_id')
+    .leftJoin('tb_night_place', 'tb_promotions.np_id', 'tb_night_place.np_id')
     .select('*');
   },
 
