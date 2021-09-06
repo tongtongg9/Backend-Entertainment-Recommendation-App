@@ -540,12 +540,15 @@ app.put('/updatestatusnp/:np_id', checkAuth, async (req, res, next) => {
 });
 
 
-app.delete('/users/:id', checkAuth, async (req, res, next) => {
+app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
   try {
-    var id = req.params.id;
 
+    var id = req.params.id;
+    
     if (id) {
-      await model.remove(db, id);
+     await model.remove(db, id , 'tb_reviews');
+     await model.remove(db, id , 'tb_booking');
+     await model.remove(db, id , 'tb_user');
       res.send({ ok: true });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });

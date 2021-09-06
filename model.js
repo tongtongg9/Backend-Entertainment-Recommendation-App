@@ -73,11 +73,13 @@ module.exports = {
       .update(data);
   },
 
-  remove(db, id) {
-    return db('users')
-      .where('id', id)
+  remove(db, id, tb) {
+    return db(tb)
+      .where('user_id', id)
       .del();
   },
+
+  
 
   //! แสดงข้อมูล user *******
   getInfoUser(db, id) {
