@@ -254,6 +254,14 @@ module.exports = {
     .select('*');
   },
 
+    //! แสดง Promotions *******
+    getPromotionsNp(db,id) {
+      return db('tb_promotions').orderBy('tb_promotions.pro_id', 'desc')
+      .where('tb_promotions.np_id', id)
+      .leftJoin('tb_promotions_img', 'tb_promotions.pro_id', 'tb_promotions_img.pro_id')
+      .select('*');
+    },
+
   //! Get Info  Promotions  *******
   getInfoPromotions(db) {
     return db('tb_promotions')

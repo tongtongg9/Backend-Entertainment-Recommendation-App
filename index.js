@@ -691,6 +691,25 @@ app.get('/getbookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดง Bookings ให้ owner ********************************
+app.get('/getpromotionsnp/:np_id', checkAuth, async (req, res, next) => {
+  try {
+
+    var id = req.params.np_id;
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getPromotionsNp(db, id);
+      res.send({ ok: true, rsprobynp: rs });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? แสดง image Promotions ให้ user  ********************************
 app.get('/showimgproforuser', checkAuth, async (req, res, next) => {
   try {
