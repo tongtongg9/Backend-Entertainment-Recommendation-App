@@ -84,7 +84,9 @@ module.exports = {
   //! แสดงข้อมูล user *******
   getInfoUser(db, id) {
     return db('tb_user')
-      .where('user_id', id);
+      .where('tb_user.user_id', id)
+      .leftJoin('tb_user_img','tb_user.user_id','tb_user_img.user_id')
+      .select('*');
   },
 
   //! แสดงข้อมูล owner *******
@@ -151,9 +153,23 @@ module.exports = {
       .limit(1);
   },
 
+    //! Get Info user for post img*******
+    getUser(db) {
+      return db('tb_user')
+        .orderBy('user_id', 'desc')
+        .select('tb_user.user_id')
+        .limit(1);
+    },
+
+  //! upload immage profile np  *******
+  uploadProfileUser(db, data) {
+    return db('tb_user_img')
+      .insert(data, 'id_img_user');
+  },
+
   //! upload immage profile user *******
   sendImages(db, data, id) {
-    return db('tb_user')
+    return db('tb_user_img')
       .where('user_id', id)
       .update(data);
   },
@@ -181,6 +197,7 @@ module.exports = {
     return db('tb_reviews').orderBy('rev_id', 'desc')
       .where('tb_reviews.np_id', id)
       .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+      .leftJoin('tb_user_img', 'tb_reviews.user_id', 'tb_user_img.user_id')
       .select('*');
   },
 
@@ -189,6 +206,7 @@ module.exports = {
     return db('tb_reviews').orderBy('rev_id', 'desc')
       .where('tb_reviews.np_id', id)
       .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+      .leftJoin('tb_user_img', 'tb_reviews.user_id', 'tb_user_img.user_id')
       .select('*')
       .limit(3);
   },
@@ -197,6 +215,7 @@ module.exports = {
   getListReviewsFeed(db) {
     return db('tb_reviews').orderBy('rev_id', 'desc')
       .leftJoin('tb_user', 'tb_reviews.user_id', 'tb_user.user_id')
+      .leftJoin('tb_user_img', 'tb_reviews.user_id', 'tb_user_img.user_id')
       .leftJoin('tb_night_place', 'tb_reviews.np_id', 'tb_night_place.np_id')
       .select('*');
   },

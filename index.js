@@ -567,7 +567,7 @@ app.get('/getprofileuser/:user_id', checkAuth, async (req, res, next) => {
 
     if (id) {
       var rs = await model.getInfoUser(db, id);
-      res.send({ ok: true, info: rs[0] });
+      res.send({ ok: true, infouser: rs[0] });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
@@ -738,6 +738,99 @@ app.get('/showimgproforuser', checkAuth, async (req, res, next) => {
 //     res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
 //   }
 // });
+
+
+// ? upload immage profile np ------------------------------------------------------------------
+app.use('/public', express.static('public')); app.use('/images', express.static('images'));
+// Set The Storage Engine
+const imgprofileuserstorage = multer.diskStorage({
+  destination: './uploads/images',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+function checkFileType(file, cb) {
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png|gif/;
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype);
+  return cb(null, true);
+
+  // if(mimetype && extname){
+  //   return cb(null,true);
+  // } else {
+  //   cb('Error: Images Only!');
+  // }
+}
+
+const uploadprofileuser = multer({
+  storage: imgprofileuserstorage,
+  limits: { fileSize: 20480000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  }
+}).array('picture', 12);
+
+//อัพโหลดรูปภาพแจ้งซ่อม (Sendrepair Upload IMG)
+var fileImgProfileName = '';
+
+async function uploadImgUser(db, data) {
+  return await model.uploadProfileUser(db, data);
+}
+
+
+// async function getRN_NO(){
+//   return await model.getRNNO(db);
+// } 
+
+app.post('/uploadsprofileuser', function (req, res, next) {
+  uploadprofileuser(req, res, (err) => {
+    if (err) {
+      console.log('error : ' + err)
+
+    } else {
+      if (req.files[0].filename == undefined) {
+        console.log('Error: No File Selected')
+
+      } else {
+        console.log(`uploads/${req.files[0].filename}`);
+
+        try {
+
+          var user_id = model.getUser(db);
+
+          //นำ path รูปมาเก็บไว้ใน ตัวแปร
+          fileImgProfileName = req.files[0].filename;
+          console.log(user_id);
+          console.log(req.files[0].filename);
+          console.log(fileImgProfileName);
+
+          if (user_id && fileImgProfileName) {
+            var data = {
+              user_id: user_id,
+              user_img: fileImgProfileName
+            };
+            var rs = uploadImgUser(db, data);
+            console.log(rs);
+
+            return res.send({ ok: true, id: rs[0] });
+          } else {
+            res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+          }
+        } catch (error) {
+          console.log(error);
+          res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+        }
+        // insert db 
+        // get RN_NO last insert
+        // 
+      }
+    }
+  });
+});
 
 // ? upload immage profile ------------------------------------------------------------------
 app.use('/public', express.static('public')); app.use('/images', express.static('images'));
