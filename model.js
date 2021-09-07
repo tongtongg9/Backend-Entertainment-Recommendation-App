@@ -167,7 +167,7 @@ module.exports = {
       .insert(data, 'id_img_user');
   },
 
-  //! upload immage profile user *******
+  //! edit immage profile user *******
   sendImages(db, data, id) {
     return db('tb_user_img')
       .where('user_id', id)
@@ -235,6 +235,16 @@ module.exports = {
       .select('*');
   },
 
+    //! แสดง noti Bookings ให้ user  *******
+    getNotiBookingsbyuser(db, id) {
+      return db('tb_booking').orderBy('bk_id', 'desc')
+        .where('tb_booking.user_id', id)
+        .where('tb_booking.bk_status','1')
+        .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+        .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+        .select('*');
+    },
+
   //! แสดง Bookings ให้ owner  *******
   getBookingsbyow(db, id) {
     return db('tb_booking').orderBy('bk_id', 'desc')
@@ -243,6 +253,17 @@ module.exports = {
       .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
       .select('*');
   },
+
+    //! แสดง Bookings ให้ owner  *******
+    getNotiBookingsbyow(db, id) {
+      return db('tb_booking').orderBy('bk_id', 'desc')
+        .where('ow_id', id)
+        .where('tb_booking.bk_status','0')
+        .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+        .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+        .select('*');
+    },
+  
 
   //! update status *******
   updateBookingsstatus(db, data, id) {

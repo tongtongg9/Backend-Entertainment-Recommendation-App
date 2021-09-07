@@ -672,6 +672,26 @@ app.get('/getbookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดง noti Bookings ให้ user ********************************
+app.get('/getnotibookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
+  try {
+    
+    var id = req.params.user_id;
+
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getNotiBookingsbyuser(db, id);
+      res.send({ ok: true, rsnotibookbyuser: rs });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? แสดง Bookings ให้ owner ********************************
 app.get('/getbookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
   try {
@@ -691,7 +711,26 @@ app.get('/getbookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
   }
 });
 
-//? แสดง Bookings ให้ owner ********************************
+//? แสดง noti Bookings ให้ owner ********************************
+app.get('/getnotibookingsbyow/:ow_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.ow_id;
+
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getNotiBookingsbyow(db, id);
+      res.send({ ok: true, rsnotibookbyow: rs });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? แสดง Promotions ให้ owner ********************************
 app.get('/getpromotionsnp/:np_id', checkAuth, async (req, res, next) => {
   try {
 
