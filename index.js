@@ -166,7 +166,7 @@ app.post('/loginowner', async (req, res) => {
   }
 
 });
-
+//todo admin ############################################
 //? Login Admin *****************************
 app.post('/loginadmin', async (req, res) => {
   var username = req.body.username;
@@ -196,6 +196,20 @@ app.post('/loginadmin', async (req, res) => {
   }
 
 });
+
+//todo get list user *******
+app.get('/admingetlistuser', checkAuth, async (req, res, next) => {
+  try {
+    var rs = await model.getDataListUser(db);
+    res.send({ ok: true, rows_user: rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
+//todo admin ############################################
 
 app.get('/users', checkAuth, async (req, res, next) => {
   try {
@@ -348,7 +362,7 @@ app.post('/registernip/:ow_id', checkAuth, async (req, res, next) => {
     console.log(np_long);
 
     if (ow_id && np_name && np_phone && np_email && np_adress && np_district && np_province && np_lat && np_long) {
-    // if (ow_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province) {
+      // if (ow_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province) {
       // var encPassword = crypto.createHash('md5').update(password).digest('hex');
       var data = {
         ow_id,
@@ -463,7 +477,7 @@ app.put('/updateownip/:np_id', checkAuth, async (req, res, next) => {
     // console.log(np_long);
 
     // if (np_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province && np_lat && np_long) {
-      if (np_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province) {
+    if (np_id && np_name && np_about && np_phone && np_email && np_adress && np_district && np_province) {
       var data = {
         np_name: np_name,
         np_about: np_about,
@@ -499,7 +513,7 @@ app.put('/updatestatus/:bk_id', checkAuth, async (req, res, next) => {
     if (bk_id && bk_status) {
       var data = {
         bk_status: bk_status,
-        
+
       };
       var rs = await model.updateBookingsstatus(db, data, bk_id);
       console.log(rs);
@@ -525,7 +539,7 @@ app.put('/updatestatusnp/:np_id', checkAuth, async (req, res, next) => {
     if (np_id && np_bk_status) {
       var data = {
         np_bk_status: np_bk_status,
-        
+
       };
       var rs = await model.updateStatusNp(db, data, np_id);
       console.log(rs);
@@ -544,12 +558,61 @@ app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
   try {
 
     var id = req.params.id;
-    
+
     if (id) {
-     await model.remove(db, id , 'tb_reviews');
-     await model.remove(db, id , 'tb_booking');
-     await model.remove(db, id , 'tb_user');
+      await model.removeUser(db, id, 'tb_reviews');
+      await model.removeUser(db, id, 'tb_booking');
+      await model.removeUser(db, id, 'tb_user_img');
+      await model.removeUser(db, id, 'tb_user');
       res.send({ ok: true });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
+app.delete('/delowner/:id', checkAuth, async (req, res, next) => {
+  try {
+
+    var id = req.params.id;
+
+    if (id) {
+
+      var data_np = await model.getdata(db, id, 'tb_night_place', 'ow_id');
+      // console.log(data_np[0].np_id)
+      if (data_np.length > 0) {
+
+        for (var i = 0; i < data_np.length; i++) {
+
+          var data_promotions = await model.getdata(db, data_np[i].np_id, 'tb_promotions', 'np_id');
+
+          await model.removeOwner(db, data_np[i].np_id, 'tb_booking', 'np_id');
+          await model.removeOwner(db, data_np[i].np_id, 'tb_night_place_imgs', 'np_id');
+          await model.removeOwner(db, data_np[i].np_id, 'tb_night_place_imgs_profile', 'np_id');
+          await model.removeOwner(db, data_np[i].np_id, 'tb_promotions', 'np_id');
+          await model.removeOwner(db, data_np[i].np_id, 'tb_reviews', 'np_id');
+
+          if (data_promotions.length > 0) {
+            for (var j = 0; j < data_promotions.length; j++) {
+              await model.removeOwner(db, data_promotions[j].pro_id, 'tb_promotions_img', 'pro_id');
+            }
+          }
+        }
+        await model.removeOwner(db, id, 'tb_night_place', 'ow_id');
+
+        await model.removeOwner(db, id, 'tb_owner', 'ow_id');
+
+        console.log(data_np)
+        console.log(data_promotions)
+
+      }
+
+      res.send({ ok: true });
+
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
@@ -675,7 +738,7 @@ app.get('/getbookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
 //? แสดง noti Bookings ให้ user ********************************
 app.get('/getnotibookingsbyuser/:user_id', checkAuth, async (req, res, next) => {
   try {
-    
+
     var id = req.params.user_id;
 
     console.log(id);
@@ -1075,7 +1138,7 @@ function checkFileType(file, cb) {
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check mime
   const mimetype = filetypes.test(file.mimetype);
-  
+
   return cb(null, true);
 
   // if(mimetype && extname){
@@ -1129,8 +1192,8 @@ app.post('/uploadsimgpromotions', function (req, res, next) {
 
           if (pro_id && filePromotionsImageName) {
             var data = {
-              pro_id : pro_id,
-              pro_img : filePromotionsImageName
+              pro_id: pro_id,
+              pro_img: filePromotionsImageName
             };
             var rs = uploadImgPromotions(db, data);
             console.log(rs);
@@ -1284,8 +1347,8 @@ app.post('/addbookings/:user_id', checkAuth, async (req, res, next) => {
     var bk_seat = req.body.bk_seat;
     var bk_detail = req.body.bk_detail;
     var bk_checkin_date = req.body.bk_checkin_date;
-    
-   
+
+
     console.log(user_id);
     console.log(np_id);
     console.log(bk_seat);
@@ -1299,7 +1362,7 @@ app.post('/addbookings/:user_id', checkAuth, async (req, res, next) => {
         np_id: np_id,
         bk_seat: bk_seat,
         bk_detail: bk_detail,
-         bk_checkin_date:  bk_checkin_date,
+        bk_checkin_date: bk_checkin_date,
       };
       var rs = await model.addBookings(db, data, user_id);
       res.send({ ok: true, id: rs[0] });
@@ -1366,7 +1429,7 @@ app.get('/getlistreviewslimit/:np_id', checkAuth, async (req, res, next) => {
 app.get('/showpromotions', checkAuth, async (req, res, next) => {
   try {
     var rs = await model.getPromotions(db);
-    res.send({ ok: true, showpromotions : rs });
+    res.send({ ok: true, showpromotions: rs });
   } catch (error) {
     console.log(error);
     res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
@@ -1377,7 +1440,7 @@ app.get('/showpromotions', checkAuth, async (req, res, next) => {
 //? add Promotions ************************************
 app.post('/addpromotions/:np_id', checkAuth, async (req, res, next) => {
   try {
-    
+
     var np_id = req.params.np_id;
     var pro_topic = req.body.pro_topic;
     var pro_detail = req.body.pro_detail;

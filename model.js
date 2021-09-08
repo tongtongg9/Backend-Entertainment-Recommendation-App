@@ -18,6 +18,7 @@ module.exports = {
       .where('ow_password', password)
       .limit(1);
   },
+//todo admin ############################################
 
   //! login Admin *******
   doLoginAdmin(db, username, password) {
@@ -27,6 +28,15 @@ module.exports = {
       .where('ad_password', password)
       .limit(1);
   },
+
+//todo get list user 
+  getDataListUser(db) {
+    return db('tb_user').orderBy('tb_user.user_id', 'desc')
+      .leftJoin('tb_user_img', 'tb_user.user_id', 'tb_user_img.user_id')
+      .select('*');
+  },
+
+  //todo admin ############################################
 
   // getList(db) {
   //   return db('users').orderBy('id');
@@ -73,10 +83,24 @@ module.exports = {
       .update(data);
   },
 
-  remove(db, id, tb) {
+  removeUser(db, id, tb) {
     return db(tb)
       .where('user_id', id)
       .del();
+  },
+
+  removeOwner(db, id, tb, key) {
+    return db(tb)
+      .where(key,id)
+      .del()
+      .select('')
+  },
+
+  
+   getdata(db, id, tb, key) {
+    return db(tb)
+      .where(key, id)
+      .select('*');
   },
 
   
