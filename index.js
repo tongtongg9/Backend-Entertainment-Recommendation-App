@@ -625,7 +625,7 @@ app.put('/updatestatusnp/:np_id', checkAuth, async (req, res, next) => {
   }
 });
 
-
+//? del user
 app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
   try {
 
@@ -646,7 +646,7 @@ app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
   }
 });
 
-
+//? del owner
 app.delete('/delowner/:id', checkAuth, async (req, res, next) => {
   try {
 
@@ -677,6 +677,55 @@ app.delete('/delowner/:id', checkAuth, async (req, res, next) => {
         await model.removeOwner(db, id, 'tb_night_place', 'ow_id');
 
         await model.removeOwner(db, id, 'tb_owner', 'ow_id');
+
+        console.log(data_np)
+        console.log(data_promotions)
+
+      }
+
+      res.send({ ok: true });
+
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
+//? del np
+app.delete('/delnp/:id', checkAuth, async (req, res, next) => {
+  try {
+
+    var id = req.params.id;
+
+    if (id) {
+
+      var data_np = await model.getdata(db, id, 'tb_night_place', 'np_id');
+      // console.log(data_np[0].np_id)
+      if (data_np.length > 0) {
+
+        for (var i = 0; i < data_np.length; i++) {
+
+          var data_promotions = await model.getdata(db, data_np[i].np_id, 'tb_promotions', 'np_id');
+
+          await model.removeNp(db, data_np[i].np_id, 'tb_booking', 'np_id');
+          await model.removeNp(db, data_np[i].np_id, 'tb_night_place_imgs', 'np_id');
+          await model.removeNp(db, data_np[i].np_id, 'tb_night_place_imgs_profile', 'np_id');
+          await model.removeNp(db, data_np[i].np_id, 'tb_promotions', 'np_id');
+          await model.removeNp(db, data_np[i].np_id, 'tb_reviews', 'np_id');
+
+          if (data_promotions.length > 0) {
+            for (var j = 0; j < data_promotions.length; j++) {
+              await model.removeNp(db, data_promotions[j].pro_id, 'tb_promotions_img', 'pro_id');
+            }
+          }
+        }
+        await model.removeNp(db, id, 'tb_night_place', 'np_id');
+
+        // await model.removeOwner(db, id, 'tb_owner', 'ow_id');
 
         console.log(data_np)
         console.log(data_promotions)

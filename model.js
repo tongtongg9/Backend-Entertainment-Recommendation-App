@@ -29,13 +29,13 @@ module.exports = {
       .limit(1);
   },
 
-    //! แสดงข้อมูล admin *******
-    getInfoAdmin(db, id) {
-      return db('tb_admin')
-        .where('ad_id', id)
-        // .leftJoin('tb_user_img', 'tb_user.user_id', 'tb_user_img.user_id')
-        // .select('*');
-    },
+  //! แสดงข้อมูล admin *******
+  getInfoAdmin(db, id) {
+    return db('tb_admin')
+      .where('ad_id', id)
+    // .leftJoin('tb_user_img', 'tb_user.user_id', 'tb_user_img.user_id')
+    // .select('*');
+  },
 
   //todo get list user 
   getDataListUser(db) {
@@ -68,13 +68,13 @@ module.exports = {
       .select('*');
   },
 
-    //todo  แสดง Bookings   
-    getDatalistBookings(db) {
-      return db('tb_booking').orderBy('bk_id', 'desc')
-        .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
-        .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
-        .select('*');
-    },
+  //todo  แสดง Bookings   
+  getDatalistBookings(db) {
+    return db('tb_booking').orderBy('bk_id', 'desc')
+      .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+      .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+      .select('*');
+  },
 
   //todo admin ############################################
 
@@ -123,12 +123,16 @@ module.exports = {
       .update(data);
   },
 
+  //! del fn ######################################################
+
+  //? del user
   removeUser(db, id, tb) {
     return db(tb)
       .where('user_id', id)
       .del();
   },
 
+  //? del owner
   removeOwner(db, id, tb, key) {
     return db(tb)
       .where(key, id)
@@ -136,14 +140,22 @@ module.exports = {
       .select('')
   },
 
+  //? del np
+  removeNp(db, id, tb, key) {
+    return db(tb)
+      .where(key, id)
+      .del()
+      .select('')
+  },
 
+  //? get data for del
   getdata(db, id, tb, key) {
     return db(tb)
       .where(key, id)
       .select('*');
   },
 
-
+  //! del fn 
 
   //! แสดงข้อมูล user *******
   getInfoUser(db, id) {
