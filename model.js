@@ -132,6 +132,27 @@ module.exports = {
       .del();
   },
 
+  //? del reviews
+  removeReviews(db, id, tb) {
+    return db(tb)
+      .where('rev_id', id)
+      .del();
+  },
+
+   //? del bookings
+   removeBookings(db, id, tb) {
+    return db(tb)
+      .where('bk_id', id)
+      .del();
+  },
+
+     //? del promotions
+     removePromotions(db, id, tb) {
+      return db(tb)
+        .where('pro_id', id)
+        .del();
+    },
+
   //? del owner
   removeOwner(db, id, tb, key) {
     return db(tb)

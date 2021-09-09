@@ -230,7 +230,7 @@ app.get('/getprofileadmin/:ad_id', checkAuth, async (req, res, next) => {
 
 app.get('/admingetlistowner', checkAuth, async (req, res, next) => {
   try {
-    var rs = await model. getDataListOwner(db);
+    var rs = await model.getDataListOwner(db);
     res.send({ ok: true, rows_owner: rs });
   } catch (error) {
     console.log(error);
@@ -241,7 +241,7 @@ app.get('/admingetlistowner', checkAuth, async (req, res, next) => {
 //todo get list user *******
 app.get('/admingetlistnp', checkAuth, async (req, res, next) => {
   try {
-    var rs = await model. getDataListNp(db);
+    var rs = await model.getDataListNp(db);
     res.send({ ok: true, rows_np: rs });
   } catch (error) {
     console.log(error);
@@ -273,7 +273,7 @@ app.get('/getbookingsbynp/:np_id', checkAuth, async (req, res, next) => {
 //todo get list user *******
 app.get('/admingetlistbookings', checkAuth, async (req, res, next) => {
   try {
-    var rs = await model. getDatalistBookings(db);
+    var rs = await model.getDatalistBookings(db);
     res.send({ ok: true, rows_booking: rs });
   } catch (error) {
     console.log(error);
@@ -636,6 +636,63 @@ app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
       await model.removeUser(db, id, 'tb_booking');
       await model.removeUser(db, id, 'tb_user_img');
       await model.removeUser(db, id, 'tb_user');
+      res.send({ ok: true });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? del reviews
+app.delete('/delreviews/:id', checkAuth, async (req, res, next) => {
+  try {
+
+    var id = req.params.id;
+
+    if (id) {
+      await model.removeReviews(db, id, 'tb_reviews');
+      res.send({ ok: true });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? del bookings
+app.delete('/delbookings/:id', checkAuth, async (req, res, next) => {
+  try {
+
+    var id = req.params.id;
+
+    if (id) {
+      await model.removeBookings(db, id, 'tb_booking');
+      res.send({ ok: true });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//? del promotions
+app.delete('/delpromotions/:id', checkAuth, async (req, res, next) => {
+  try {
+
+    var id = req.params.id;
+
+    if (id) {
+      
+      await model.removePromotions(db, id, 'tb_promotions_img');
+      await model.removePromotions(db, id, 'tb_promotions');
+
       res.send({ ok: true });
     } else {
       res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
