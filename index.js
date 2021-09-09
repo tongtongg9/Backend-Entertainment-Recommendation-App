@@ -209,6 +209,78 @@ app.get('/admingetlistuser', checkAuth, async (req, res, next) => {
 });
 
 
+//todo get list user *******
+//? แสดงข้อมูล user ********************************
+app.get('/getprofileadmin/:ad_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.ad_id;
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getInfoAdmin(db, id);
+      res.send({ ok: true, infoadmin: rs[0] });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+app.get('/admingetlistowner', checkAuth, async (req, res, next) => {
+  try {
+    var rs = await model. getDataListOwner(db);
+    res.send({ ok: true, rows_owner: rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+//todo get list user *******
+app.get('/admingetlistnp', checkAuth, async (req, res, next) => {
+  try {
+    var rs = await model. getDataListNp(db);
+    res.send({ ok: true, rows_np: rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
+//todo  แสดง Bookings in np  
+app.get('/getbookingsbynp/:np_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.np_id;
+
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getBookingsbynp(db, id);
+      res.send({ ok: true, rsbookbynp: rs });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
+
+//todo get list user *******
+app.get('/admingetlistbookings', checkAuth, async (req, res, next) => {
+  try {
+    var rs = await model. getDatalistBookings(db);
+    res.send({ ok: true, rows_booking: rs });
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //todo admin ############################################
 
 app.get('/users', checkAuth, async (req, res, next) => {

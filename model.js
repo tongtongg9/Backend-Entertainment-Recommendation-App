@@ -18,7 +18,7 @@ module.exports = {
       .where('ow_password', password)
       .limit(1);
   },
-//todo admin ############################################
+  //todo admin ############################################
 
   //! login Admin *******
   doLoginAdmin(db, username, password) {
@@ -29,12 +29,52 @@ module.exports = {
       .limit(1);
   },
 
-//todo get list user 
+    //! แสดงข้อมูล admin *******
+    getInfoAdmin(db, id) {
+      return db('tb_admin')
+        .where('ad_id', id)
+        // .leftJoin('tb_user_img', 'tb_user.user_id', 'tb_user_img.user_id')
+        // .select('*');
+    },
+
+  //todo get list user 
   getDataListUser(db) {
     return db('tb_user').orderBy('tb_user.user_id', 'desc')
       .leftJoin('tb_user_img', 'tb_user.user_id', 'tb_user_img.user_id')
       .select('*');
   },
+
+  //todo get list user 
+  getDataListOwner(db) {
+    return db('tb_owner').orderBy('tb_owner.ow_id', 'desc')
+    // .leftJoin('tb_night_place', 'tb_owner.ow_id', 'tb_night_place.ow_id')
+    // .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place_imgs_profile.np_id')
+    // .select('*');
+  },
+
+  //todo แสดงข้อมูลร้านให้ user 
+  getDataListNp(db) {
+    return db('tb_night_place').orderBy('tb_night_place.np_id', 'desc')
+      .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place_imgs_profile.np_id')
+      .select('*');
+  },
+
+  //todo  แสดง Bookings in np  
+  getBookingsbynp(db, id) {
+    return db('tb_booking').orderBy('bk_id', 'desc')
+      .where('tb_booking.np_id', id)
+      .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+      .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+      .select('*');
+  },
+
+    //todo  แสดง Bookings   
+    getDatalistBookings(db) {
+      return db('tb_booking').orderBy('bk_id', 'desc')
+        .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+        .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+        .select('*');
+    },
 
   //todo admin ############################################
 
@@ -91,25 +131,25 @@ module.exports = {
 
   removeOwner(db, id, tb, key) {
     return db(tb)
-      .where(key,id)
+      .where(key, id)
       .del()
       .select('')
   },
 
-  
-   getdata(db, id, tb, key) {
+
+  getdata(db, id, tb, key) {
     return db(tb)
       .where(key, id)
       .select('*');
   },
 
-  
+
 
   //! แสดงข้อมูล user *******
   getInfoUser(db, id) {
     return db('tb_user')
       .where('tb_user.user_id', id)
-      .leftJoin('tb_user_img','tb_user.user_id','tb_user_img.user_id')
+      .leftJoin('tb_user_img', 'tb_user.user_id', 'tb_user_img.user_id')
       .select('*');
   },
 
@@ -120,27 +160,17 @@ module.exports = {
   },
 
   //! แสดงข้อมูลร้าน by Owner *******
-  // getListNpbyOw(db, id) {
-  //   return db('tb_night_place')
-  //   .orderBy('np_id', 'desc')
-  //   .where('ow_id', id);
-  // },
   getListNpbyOw(db, id) {
-    return db('tb_night_place_imgs_profile').orderBy('imgspro_id', 'desc')
+    return db('tb_night_place').orderBy('tb_night_place.np_id', 'desc')
       .where('ow_id', id)
-      .leftJoin('tb_night_place', 'tb_night_place_imgs_profile.np_id', 'tb_night_place.np_id')
+      .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place.np_id')
       .select('*');
   },
 
   //! แสดงข้อมูลร้านให้ user *******
-  // getDataNp(db) {
-  //   return db('tb_night_place').orderBy('tb_nigh.t_placenp_id', 'desc')
-  //   .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.imgspro_id', 'tb_night_place.imgspro_id')
-  //   .select('*');
-  // },
   getDataNp(db) {
-    return db('tb_night_place_imgs_profile').orderBy('imgspro_id', 'desc')
-      .leftJoin('tb_night_place', 'tb_night_place_imgs_profile.np_id', 'tb_night_place.np_id')
+    return db('tb_night_place').orderBy('tb_night_place.np_id', 'desc')
+      .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place_imgs_profile.np_id')
       .select('*');
   },
 
@@ -177,13 +207,13 @@ module.exports = {
       .limit(1);
   },
 
-    //! Get Info user for post img*******
-    getUser(db) {
-      return db('tb_user')
-        .orderBy('user_id', 'desc')
-        .select('tb_user.user_id')
-        .limit(1);
-    },
+  //! Get Info user for post img*******
+  getUser(db) {
+    return db('tb_user')
+      .orderBy('user_id', 'desc')
+      .select('tb_user.user_id')
+      .limit(1);
+  },
 
   //! upload immage profile np  *******
   uploadProfileUser(db, data) {
@@ -259,15 +289,15 @@ module.exports = {
       .select('*');
   },
 
-    //! แสดง noti Bookings ให้ user  *******
-    getNotiBookingsbyuser(db, id) {
-      return db('tb_booking').orderBy('bk_id', 'desc')
-        .where('tb_booking.user_id', id)
-        .where('tb_booking.bk_status','1')
-        .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
-        .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
-        .select('*');
-    },
+  //! แสดง noti Bookings ให้ user  *******
+  getNotiBookingsbyuser(db, id) {
+    return db('tb_booking').orderBy('bk_id', 'desc')
+      .where('tb_booking.user_id', id)
+      .where('tb_booking.bk_status', '1')
+      .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+      .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+      .select('*');
+  },
 
   //! แสดง Bookings ให้ owner  *******
   getBookingsbyow(db, id) {
@@ -278,16 +308,16 @@ module.exports = {
       .select('*');
   },
 
-    //! แสดง Bookings ให้ owner  *******
-    getNotiBookingsbyow(db, id) {
-      return db('tb_booking').orderBy('bk_id', 'desc')
-        .where('ow_id', id)
-        .where('tb_booking.bk_status','0')
-        .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
-        .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
-        .select('*');
-    },
-  
+  //! แสดง Bookings ให้ owner  *******
+  getNotiBookingsbyow(db, id) {
+    return db('tb_booking').orderBy('bk_id', 'desc')
+      .where('ow_id', id)
+      .where('tb_booking.bk_status', '0')
+      .leftJoin('tb_user', 'tb_booking.user_id', 'tb_user.user_id')
+      .leftJoin('tb_night_place', 'tb_booking.np_id', 'tb_night_place.np_id')
+      .select('*');
+  },
+
 
   //! update status *******
   updateBookingsstatus(db, data, id) {
@@ -312,19 +342,19 @@ module.exports = {
   //! แสดง Promotions *******
   getPromotions(db) {
     return db('tb_promotions').orderBy('tb_promotions.pro_id', 'desc')
-    // .where('tb_promotions.np_id', id)
-    .leftJoin('tb_promotions_img', 'tb_promotions.pro_id', 'tb_promotions_img.pro_id')
-    .leftJoin('tb_night_place', 'tb_promotions.np_id', 'tb_night_place.np_id')
-    .select('*');
+      // .where('tb_promotions.np_id', id)
+      .leftJoin('tb_promotions_img', 'tb_promotions.pro_id', 'tb_promotions_img.pro_id')
+      .leftJoin('tb_night_place', 'tb_promotions.np_id', 'tb_night_place.np_id')
+      .select('*');
   },
 
-    //! แสดง Promotions *******
-    getPromotionsNp(db,id) {
-      return db('tb_promotions').orderBy('tb_promotions.pro_id', 'desc')
+  //! แสดง Promotions *******
+  getPromotionsNp(db, id) {
+    return db('tb_promotions').orderBy('tb_promotions.pro_id', 'desc')
       .where('tb_promotions.np_id', id)
       .leftJoin('tb_promotions_img', 'tb_promotions.pro_id', 'tb_promotions_img.pro_id')
       .select('*');
-    },
+  },
 
   //! Get Info  Promotions  *******
   getInfoPromotions(db) {
@@ -340,7 +370,7 @@ module.exports = {
       .insert(data, 'id_img_pro');
   },
 
-    //! แสดง image Promotions ให้ user *******
+  //! แสดง image Promotions ให้ user *******
   getImagesPromotions(db) {
     return db('tb_promotions_img').orderBy('id_img_pro', 'desc')
   },
@@ -352,6 +382,6 @@ module.exports = {
   //     .select('*')
   //   // .limit(1);
   // },
-  
+
 
 };
