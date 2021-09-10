@@ -196,7 +196,7 @@ module.exports = {
   getListNpbyOw(db, id) {
     return db('tb_night_place').orderBy('tb_night_place.np_id', 'desc')
       .where('ow_id', id)
-      .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place.np_id')
+      .leftJoin('tb_night_place_imgs_profile', 'tb_night_place.np_id', 'tb_night_place_imgs_profile.np_id')
       .select('*');
   },
 
