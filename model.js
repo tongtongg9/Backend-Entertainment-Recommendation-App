@@ -192,6 +192,12 @@ module.exports = {
       .where('ow_id', id);
   },
 
+//! แสดงข้อมูล np *******
+  getDetilNp(db, id) {
+    return db('tb_night_place')
+      .where('np_id', id);
+  },
+
   //! แสดงข้อมูลร้าน by Owner *******
   getListNpbyOw(db, id) {
     return db('tb_night_place').orderBy('tb_night_place.np_id', 'desc')

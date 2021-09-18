@@ -836,6 +836,24 @@ app.get('/getprofileowner/:ow_id', checkAuth, async (req, res, next) => {
   }
 });
 
+//? แสดงข้อมูล np ********************************
+app.get('/getdetailnp/:np_id', checkAuth, async (req, res, next) => {
+  try {
+    var id = req.params.np_id;
+    console.log(id);
+
+    if (id) {
+      var rs = await model.getDetilNp(db, id);
+      res.send({ ok: true, infoNp: rs[0] });
+    } else {
+      res.send({ ok: false, error: 'Invalid data', code: HttpStatus.INTERNAL_SERVER_ERROR });
+    }
+  } catch (error) {
+    console.log(error);
+    res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
+  }
+});
+
 //? แสดงข้อมูลร้าน by Owner ********************************
 app.get('/getdatanpbyow/:ow_id', checkAuth, async (req, res, next) => {
   try {
