@@ -139,19 +139,19 @@ module.exports = {
       .del();
   },
 
-   //? del bookings
-   removeBookings(db, id, tb) {
+  //? del bookings
+  removeBookings(db, id, tb) {
     return db(tb)
       .where('bk_id', id)
       .del();
   },
 
-     //? del promotions
-     removePromotions(db, id, tb) {
-      return db(tb)
-        .where('pro_id', id)
-        .del();
-    },
+  //? del promotions
+  removePromotions(db, id, tb) {
+    return db(tb)
+      .where('pro_id', id)
+      .del();
+  },
 
   //? del owner
   removeOwner(db, id, tb, key) {
@@ -192,7 +192,7 @@ module.exports = {
       .where('ow_id', id);
   },
 
-//! แสดงข้อมูล np *******
+  //! แสดงข้อมูล np *******
   getDetilNp(db, id) {
     return db('tb_night_place')
       .where('np_id', id);

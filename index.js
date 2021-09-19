@@ -626,7 +626,7 @@ app.put('/updatestatusnp/:np_id', checkAuth, async (req, res, next) => {
 });
 
 //? del user
-app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
+app.delete('/delusers/:id', async (req, res, next) => {
   try {
 
     var id = req.params.id;
@@ -647,7 +647,7 @@ app.delete('/delusers/:id', checkAuth, async (req, res, next) => {
 });
 
 //? del reviews
-app.delete('/delreviews/:id', checkAuth, async (req, res, next) => {
+app.delete('/delreviews/:id',async (req, res, next) => {
   try {
 
     var id = req.params.id;
@@ -665,7 +665,7 @@ app.delete('/delreviews/:id', checkAuth, async (req, res, next) => {
 });
 
 //? del bookings
-app.delete('/delbookings/:id', checkAuth, async (req, res, next) => {
+app.delete('/delbookings/:id', async (req, res, next) => {
   try {
 
     var id = req.params.id;
@@ -683,13 +683,12 @@ app.delete('/delbookings/:id', checkAuth, async (req, res, next) => {
 });
 
 //? del promotions
-app.delete('/delpromotions/:id', checkAuth, async (req, res, next) => {
+app.delete('/delpromotions/:id', async (req, res, next) => {
   try {
 
     var id = req.params.id;
 
     if (id) {
-      
       await model.removePromotions(db, id, 'tb_promotions_img');
       await model.removePromotions(db, id, 'tb_promotions');
 
@@ -704,7 +703,7 @@ app.delete('/delpromotions/:id', checkAuth, async (req, res, next) => {
 });
 
 //? del owner
-app.delete('/delowner/:id', checkAuth, async (req, res, next) => {
+app.delete('/delowner/:id', async (req, res, next) => {
   try {
 
     var id = req.params.id;
@@ -753,7 +752,7 @@ app.delete('/delowner/:id', checkAuth, async (req, res, next) => {
 
 
 //? del np
-app.delete('/delnp/:id', checkAuth, async (req, res, next) => {
+app.delete('/delnp/:id', async (req, res, next) => {
   try {
 
     var id = req.params.id;
