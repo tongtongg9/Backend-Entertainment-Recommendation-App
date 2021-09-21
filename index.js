@@ -703,7 +703,7 @@ app.delete('/delpromotions/:id', async (req, res, next) => {
 });
 
 //? del owner
-app.delete('/delowner/:id', async (req, res, next) => {
+app.delete('/delowner/:id',async (req, res, next) => {
   try {
 
     var id = req.params.id;
@@ -711,7 +711,9 @@ app.delete('/delowner/:id', async (req, res, next) => {
     if (id) {
 
       var data_np = await model.getdata(db, id, 'tb_night_place', 'ow_id');
-      // console.log(data_np[0].np_id)
+      
+      // console.log(data_np[0].ow_id)
+
       if (data_np.length > 0) {
 
         for (var i = 0; i < data_np.length; i++) {
@@ -730,6 +732,7 @@ app.delete('/delowner/:id', async (req, res, next) => {
             }
           }
         }
+        
         await model.removeOwner(db, id, 'tb_night_place', 'ow_id');
 
         await model.removeOwner(db, id, 'tb_owner', 'ow_id');
@@ -750,7 +753,6 @@ app.delete('/delowner/:id', async (req, res, next) => {
   }
 });
 
-
 //? del np
 app.delete('/delnp/:id', async (req, res, next) => {
   try {
@@ -760,7 +762,7 @@ app.delete('/delnp/:id', async (req, res, next) => {
     if (id) {
 
       var data_np = await model.getdata(db, id, 'tb_night_place', 'np_id');
-      // console.log(data_np[0].np_id)
+      console.log(data_np[0].np_id)
       if (data_np.length > 0) {
 
         for (var i = 0; i < data_np.length; i++) {
